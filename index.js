@@ -14,6 +14,7 @@ client.once('ready', async () => {
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
+  if (!message.mentions.users.size) return; // ⬅️ Jeśli nie ma żadnej wzmianki, przerwij
 
   const channelId = process.env.CHANNEL_ID;
   if (!channelId) {
