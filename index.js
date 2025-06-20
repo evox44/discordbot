@@ -1,5 +1,5 @@
 require('dotenv').config();
-require('./keepAlive'); // ⬅️ Keep alive serwer HTTP
+require('./keep_alive'); // ⬅️ Keep alive serwer HTTP
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
