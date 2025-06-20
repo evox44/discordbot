@@ -1,10 +1,10 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, ChannelType } = require('discord.js');
-const keepAlive = require('./keepAlive');
+const keepAlive = require('./keep_alive'); // 👈 poprawiona nazwa pliku
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
-const UPDATE_INTERVAL = 10 * 60 * 1000;
+const UPDATE_INTERVAL = 10 * 60 * 1000; // co 10 minut
 
 let messageCount = 0;
 
@@ -40,5 +40,5 @@ async function updateChannelName() {
   }
 }
 
-keepAlive();
+keepAlive(); // ⏰ uruchamia serwer keep-alive
 client.login(TOKEN);
