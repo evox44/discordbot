@@ -1,53 +1,54 @@
-require('dotenv').config();
-require('./keep_alive'); // ⬅️ Keep alive serwer HTTP
+require("dotenv").config();
+require("./keep_alive"); // Render keep-alive
 
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, GatewayIntentBits } = require("discord.js");
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent
-  ],
-  partials: [Partials.Channel]
+  ]
 });
 
-const counts = new Map();
-const CHANNEL_ID = process.env.COUNTER_CHANNEL_ID;
+const CHANNEL_ID = process.env.CHANNEL_ID;
+let messageCounts = {};
 
-client.on('ready', () => {
+client.once("ready", () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
+  updateChannelName();
+  setInterval(updateChannelName, 10_000);
 });
 
-client.on('messageCreate', async (message) => {
-  if (message.channel.id !== CHANNEL_ID) return;
-  if (message.author.bot) return; // ⬅️ Ignorujemy boty
+client.on("messageCreate", (msg) => {
+  if (msg.author.bot) return;
 
-  const userId = message.author.id;
-  const current = counts.get(userId) || 0;
-  counts.set(userId, current + 1);
+  const id = msg.author.id;
 
-  updateChannelName();
+  // START z 5, potem +1 przy każdej wiadomości
+  if (!messageCounts[id]) {
+    messageCounts[id] = 5;
+  } else {
+    messageCounts[id] += 1;
+  }
+
+  console.log(`💬 ${msg.author.username}: ${messageCounts[id]} wiadomości`);
 });
 
 async function updateChannelName() {
-  const channel = await client.channels.fetch(CHANNEL_ID);
-  if (!channel) return;
+  try {
+    const channel = await client.channels.fetch(CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
 
-  let totalMessages = 4; // ⬅️ Startujemy od 4
+    const total = Object.values(messageCounts).reduce((a, b) => a + b, 0);
+    const newName = `💚︲l3git·ch3ck➔${total}`;
 
-  for (const count of counts.values()) {
-    totalMessages += count;
-  }
-
-  const newName = `💚・l3git•ch3ck➜${totalMessages}`;
-  if (channel.name !== newName) {
-    try {
+    if (channel.name !== newName) {
       await channel.setName(newName);
-      console.log(`🔁 Zaktualizowano nazwę kanału: ${newName}`);
-    } catch (err) {
-      console.error('❌ Błąd przy aktualizacji kanału:', err.message);
+      console.log(`#️⃣ Zmieniono nazwę kanału na: ${newName}`);
     }
+  } catch (err) {
+    console.error("❌ Błąd przy aktualizacji kanału:", err.message);
   }
 }
 
