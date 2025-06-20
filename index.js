@@ -1,55 +1,41 @@
-require("dotenv").config();
-require("./keep_alive"); // Render keep-alive
-
-const { Client, GatewayIntentBits } = require("discord.js");
+require('dotenv').config();
+const { Client, GatewayIntentBits } = require('discord.js');
+const keepAlive = require('./keep_alive');
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
-const CHANNEL_ID = process.env.CHANNEL_ID;
-let messageCounts = {};
+let messageCount = 5; // startowy licznik
 
-client.once("ready", () => {
+client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
-  updateChannelName();
-  setInterval(updateChannelName, 10_000);
 });
 
-client.on("messageCreate", (msg) => {
-  if (msg.author.bot) return;
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
 
-  const id = msg.author.id;
-
-  // START z 5, potem +1 przy każdej wiadomości
-  if (!messageCounts[id]) {
-    messageCounts[id] = 5;
-  } else {
-    messageCounts[id] += 1;
+  const channelId = process.env.CHANNEL_ID;
+  if (!channelId) {
+    console.error('❌ Brakuje CHANNEL_ID w .env!');
+    return;
   }
 
-  console.log(`💬 ${msg.author.username}: ${messageCounts[id]} wiadomości`);
-});
-
-async function updateChannelName() {
   try {
-    const channel = await client.channels.fetch(CHANNEL_ID);
-    if (!channel || !channel.isTextBased()) return;
-
-    const total = Object.values(messageCounts).reduce((a, b) => a + b, 0);
-    const newName = `💚︲l3git·ch3ck➔${total}`;
-
-    if (channel.name !== newName) {
-      await channel.setName(newName);
-      console.log(`#️⃣ Zmieniono nazwę kanału na: ${newName}`);
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) {
+      console.error('❌ Nie znaleziono kanału!');
+      return;
     }
-  } catch (err) {
-    console.error("❌ Błąd przy aktualizacji kanału:", err.message);
-  }
-}
 
+    messageCount++; // inkrementuj licznik
+    const newName = `💚︲l3git·ch3ck➔${messageCount}`;
+    await channel.setName(newName);
+    console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
+  } catch (error) {
+    console.error('❌ Błąd przy aktualizacji kanału:', error.message);
+  }
+});
+
+keepAlive(); // render.com
 client.login(process.env.TOKEN);
