@@ -1,12 +1,16 @@
 const express = require('express');
 
-const app = express();
+function keepAlive() {
+  const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Bot działa!');
-});
+  app.get('/', (req, res) => {
+    res.send('✅ Bot działa i nie śpi!');
+  });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🌐 Serwer keep-alive działa na porcie ${PORT}`);
-});
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🌐 Keep-alive działa na porcie ${PORT}`);
+  });
+}
+
+module.exports = keepAlive;

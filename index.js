@@ -1,15 +1,13 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, ChannelType } = require('discord.js');
-const express = require('express');
+const keepAlive = require('./keepAlive');
 
-// === ZMIENNE ŚRODOWISKOWE ===
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
-const UPDATE_INTERVAL = 10 * 60 * 1000; // co 10 minut
+const UPDATE_INTERVAL = 10 * 60 * 1000;
 
 let messageCount = 0;
 
-// === DISCORD BOT ===
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -36,22 +34,11 @@ async function updateChannelName() {
 
     const newName = `💚︲l3git·ch3ck➔${messageCount}`;
     await channel.setName(newName);
-    console.log(`🔄 Zmieniono nazwę kanału na: ${newName}`);
+    console.log(`🔄 Nazwa zaktualizowana: ${newName}`);
   } catch (err) {
     console.error('❌ Błąd przy zmianie nazwy kanału:', err.message);
   }
 }
 
+keepAlive();
 client.login(TOKEN);
-
-// === KEEP ALIVE SERVER ===
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('✅ Bot działa i nie śpi!');
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🌐 Keep-alive serwer działa na porcie ${PORT}`);
-});
