@@ -12,7 +12,7 @@ const client = new Client({
 });
 
 const COUNTER_FILE = 'counter.json';
-const legitChannelId = '1382320412016513024'; // ID kanału LEGITCHECKI
+const legitChannelId = '1385716982875291780'; // ID kanału LEGITCHECKI
 
 // Wczytaj messageCount z pliku
 let messageCount = 6;
