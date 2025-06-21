@@ -6,7 +6,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
-let messageCount = 5; // startowy licznik
+let messageCount = 6; // startowy licznik
 
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
