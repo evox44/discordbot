@@ -32,7 +32,7 @@ client.once('ready', async () => {
 
   const statuses = [
     { name: '.gg/soulstore', type: ActivityType.Watching },
-    { name: 'SoulStore | Najtaniej i najszybciej!', type: ActivityType.Playing },
+    { name: 'SoulStore | Najt4niej i Najszybciej!', type: ActivityType.Playing },
   ];
 
   let index = 0;
