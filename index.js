@@ -11,7 +11,7 @@ let messageCount = 6; // startowy licznik
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
- let status = 'gg/soulstore'; // tutaj zmieniasz treść statusu
+ let status = '**.gg/soulstore**'; // tutaj zmieniasz treść statusu
 
  client.user.setPresence({
     activities: [{ name: status, type: 3 }], // 3 = WATCHING
