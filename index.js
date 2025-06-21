@@ -27,7 +27,7 @@ client.once('ready', async () => {
     });
 
     index = (index + 1) % statuses.length;
-  }, 4000); // co 10 sekund
+  }, 7000); // co 7 sekund
 
 });
 
