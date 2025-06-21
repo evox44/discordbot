@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const keepAlive = require('./keep_alive');
 
 const client = new Client({
@@ -11,7 +11,12 @@ let messageCount = 6; // startowy licznik
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
-client.user.setActivity('.gg/soulstore', { type: 'WATCHING' }); // ← tutaj ustalasz status
+ let status = 'gg/soulstore'; // tutaj zmieniasz treść statusu
+
+ client.user.setPresence({
+    activities: [{ name: status, type: 3 }], // 3 = WATCHING
+    status: 'online'
+  });
 });
 
 client.on('messageCreate', async (message) => {
