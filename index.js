@@ -10,6 +10,8 @@ let messageCount = 6; // startowy licznik
 
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
+
+client.user.setActivity('.gg/soulstore', { type: 'WATCHING' }); // ← tutaj ustalasz status
 });
 
 client.on('messageCreate', async (message) => {
