@@ -11,12 +11,24 @@ let messageCount = 6; // startowy licznik
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
- let status = '.gg/soulstore'; // tutaj zmieniasz treść statusu
+ const statuses = [
+    { name: '.gg/soulstore', type: 3 }, // WATCHING
+    { name: 'SoulStore | Najt4niej i Najszybciej!', type: 0 },   // PLAYING
+  ];
 
- client.user.setPresence({
-    activities: [{ name: status, type: 3 }], // 3 = WATCHING
-    status: 'online'
-  });
+  let index = 0;
+  let status = statuses[index]; // <-- let status
+
+  setInterval(() => {
+    status = statuses[index];
+    client.user.setPresence({
+      activities: [status],
+      status: 'online'
+    });
+
+    index = (index + 1) % statuses.length;
+  }, 4000); // co 10 sekund
+
 });
 
 client.on('messageCreate', async (message) => {
