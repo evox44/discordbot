@@ -14,8 +14,8 @@ const client = new Client({
 const COUNTER_FILE = 'counter.json';
 const legitChannelId = '1385716982875291780'; // ID kanału LEGITCHECKI
 
-// Wczytaj messageCount z pliku
-let messageCount = 6;
+// Wczytaj messageCount z pliku lub ustaw na 0, jeśli brak pliku
+let messageCount = 0;
 if (fs.existsSync(COUNTER_FILE)) {
   try {
     const data = JSON.parse(fs.readFileSync(COUNTER_FILE));
@@ -32,7 +32,7 @@ client.once('ready', async () => {
 
   const statuses = [
     { name: '.gg/soulstore', type: ActivityType.Watching },
-    { name: 'SoulStore | Najt4niej i Najszybciej!', type: ActivityType.Playing },
+    { name: 'SoulStore | Najtaniej i Najszybciej!', type: ActivityType.Playing },
   ];
 
   let index = 0;
@@ -47,7 +47,7 @@ client.once('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
-  // 🔒 Ignoruj boty
+  // 🟨 Ignoruj boty
   if (message.author.bot) return;
 
   // ✅ Tylko kanał LEGITCHECKI
@@ -64,7 +64,7 @@ client.on('messageCreate', async (message) => {
     }
 
     messageCount++;
-    const newName = `💚︲l3git·ch3ck➔${messageCount}`;
+    const newName = `✅ l3git✅ch3ck✅${messageCount}`;
 
     await channel.setName(newName);
     console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
