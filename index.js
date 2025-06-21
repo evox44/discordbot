@@ -7,14 +7,15 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
   ],
 });
 
 const COUNTER_FILE = 'counter.json';
+const legitChannelId = '1382320412016513024'; // ID kanału LEGITCHECKI
 
-// Wczytujemy messageCount z pliku
-let messageCount = 6; // domyślnie 6
+// Wczytaj messageCount z pliku
+let messageCount = 6;
 if (fs.existsSync(COUNTER_FILE)) {
   try {
     const data = JSON.parse(fs.readFileSync(COUNTER_FILE));
@@ -31,7 +32,7 @@ client.once('ready', async () => {
 
   const statuses = [
     { name: '.gg/soulstore', type: ActivityType.Watching },
-    { name: 'SoulStore | Najt4niej i Najszybciej!', type: ActivityType.Playing },
+    { name: 'SoulStore | Najtaniej i najszybciej!', type: ActivityType.Playing },
   ];
 
   let index = 0;
@@ -46,13 +47,17 @@ client.once('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
+  // 🔒 Ignoruj boty
   if (message.author.bot) return;
-  if (!message.mentions.users.size) return; // jeśli nie ma wzmianki, przerywamy
 
-  const channelId = '1382320412016513024'; // <-- ustawione na sztywno
+  // ✅ Tylko kanał LEGITCHECKI
+  if (message.channel.id !== legitChannelId) return;
+
+  // ✅ Musi być wzmianka
+  if (!message.mentions.users.size) return;
 
   try {
-    const channel = await client.channels.fetch(channelId);
+    const channel = await client.channels.fetch(legitChannelId);
     if (!channel) {
       console.error('❌ Nie znaleziono kanału!');
       return;
@@ -64,7 +69,6 @@ client.on('messageCreate', async (message) => {
     await channel.setName(newName);
     console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
 
-    // Zapisujemy messageCount do pliku
     fs.writeFileSync(COUNTER_FILE, JSON.stringify({ messageCount }, null, 2));
   } catch (error) {
     console.error('❌ Błąd przy aktualizacji kanału:', error.message);
