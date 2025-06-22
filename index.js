@@ -76,36 +76,31 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-keepAlive(); // render.com
-client.login(process.env.DISCORD_TOKEN);
 
-
-
-
-
-
-const roleToWatch = '1382320392143634455'; // ID roli, którą chcesz śledzić
+const roleToWatch = '1382320392143634455'; // <- Podmień na właściwe ID roli
 const channelsToPing = [
-    '1382320417288618055', // ID pierwszego kanału
-    '1382320412016513024', // ID drugiego kanału
+    '1382320417288618055', // <- i tu
+    '1382320412016513024',
+    '1383157622428925952',
 ];
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
     const oldRoles = new Set(oldMember.roles.cache.keys());
     const newRoles = new Set(newMember.roles.cache.keys());
 
-    // Sprawdź, czy rola została dodana
     if (!oldRoles.has(roleToWatch) && newRoles.has(roleToWatch)) {
         for (const channelId of channelsToPing) {
             try {
                 const channel = await client.channels.fetch(channelId);
                 if (!channel || !channel.isTextBased()) continue;
 
-                await channel.send(`<@${newMember.id}>`);
+                const sentMessage = await channel.send(`<@${newMember.id}>`);
 
                 setTimeout(() => {
-                    message.delete().catch(console.error);
-                }, 500);
+                    sentMessage.delete()
+                        .then(() => console.log('✅ Wiadomość usunięta.'))
+                        .catch(err => console.error('❌ Błąd przy usuwaniu wiadomości:', err.message));
+                }, 500); // 0.5 sekundy
 
             } catch (error) {
                 console.error(`❌ Błąd przy pingowaniu na kanale ${channelId}:`, error.message);
@@ -113,3 +108,8 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
         }
     }
 });
+
+// 🔼🔼🔼 KONIEC DODATKU 🔼🔼🔼
+
+keepAlive(); // render.com
+client.login(process.env.DISCORD_TOKEN);
