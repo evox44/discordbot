@@ -1,6 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
-const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, Events } = require('discord.js');
 const keepAlive = require('./keep_alive');
 
 const client = new Client({
@@ -8,6 +8,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
@@ -77,3 +78,33 @@ client.on('messageCreate', async (message) => {
 
 keepAlive(); // render.com
 client.login(process.env.DISCORD_TOKEN);
+
+
+
+
+
+
+const roleToWatch = '1382320392143634455'; // ID roli, którą chcesz śledzić
+const channelsToPing = [
+    '1382320417288618055', // ID pierwszego kanału
+    '1382320412016513024', // ID drugiego kanału
+];
+
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    const oldRoles = new Set(oldMember.roles.cache.keys());
+    const newRoles = new Set(newMember.roles.cache.keys());
+
+    // Sprawdź, czy rola została dodana
+    if (!oldRoles.has(roleToWatch) && newRoles.has(roleToWatch)) {
+        for (const channelId of channelsToPing) {
+            try {
+                const channel = await client.channels.fetch(channelId);
+                if (!channel || !channel.isTextBased()) continue;
+
+                await channel.send(`<@${newMember.id}>`);
+            } catch (error) {
+                console.error(`❌ Błąd przy pingowaniu na kanale ${channelId}:`, error.message);
+            }
+        }
+    }
+});
