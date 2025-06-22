@@ -102,6 +102,11 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
                 if (!channel || !channel.isTextBased()) continue;
 
                 await channel.send(`<@${newMember.id}>`);
+
+                setTimeout(() => {
+                    message.delete().catch(console.error);
+                }, 500);
+
             } catch (error) {
                 console.error(`❌ Błąd przy pingowaniu na kanale ${channelId}:`, error.message);
             }
