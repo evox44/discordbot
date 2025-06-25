@@ -48,7 +48,7 @@ client.once('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
-  // 🟨 Ignoruj boty
+  // 🛑 Ignoruj boty
   if (message.author.bot) return;
 
   // ✅ Tylko kanał LEGITCHECKI
@@ -65,51 +65,50 @@ client.on('messageCreate', async (message) => {
     }
 
     messageCount++;
-    const newName = `💚︲l3git·ch3ck➔${messageCount}`;
+    const newName = `💚︲ʟᴇɢɪᴛ·ᴄʜᴇᴄᴋɪ➔${messageCount}`;
 
     await channel.setName(newName);
     console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
 
+    // ✅ Automatyczny zapis do counter.json
     fs.writeFileSync(COUNTER_FILE, JSON.stringify({ messageCount }, null, 2));
   } catch (error) {
     console.error('❌ Błąd przy aktualizacji kanału:', error.message);
   }
 });
 
-
-const roleToWatch = '1382320392143634455'; // <- Podmień na właściwe ID roli
+const roleToWatch = '138232039214364455';
 const channelsToPing = [
-    '1382320417288618055', // <- i tu
-    '1382320412016513024',
-    '1383157622428925952',
+  '1382320417286180855', // <- i tu
+  '1382320412016513024',
+  '1383157622428925952',
 ];
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
-    const oldRoles = new Set(oldMember.roles.cache.keys());
-    const newRoles = new Set(newMember.roles.cache.keys());
+  const oldRoles = new Set(oldMember.roles.cache.keys());
+  const newRoles = new Set(newMember.roles.cache.keys());
 
-    if (!oldRoles.has(roleToWatch) && newRoles.has(roleToWatch)) {
-        for (const channelId of channelsToPing) {
-            try {
-                const channel = await client.channels.fetch(channelId);
-                if (!channel || !channel.isTextBased()) continue;
+  if (!oldRoles.has(roleToWatch) && newRoles.has(roleToWatch)) {
+    for (const channelId of channelsToPing) {
+      try {
+        const channel = await client.channels.fetch(channelId);
+        if (!channel || !channel.isTextBased()) continue;
 
-                const sentMessage = await channel.send(`<@${newMember.id}>`);
+        const sentMessage = await channel.send(`<@${newMember.id}>`);
 
-                setTimeout(() => {
-                    sentMessage.delete()
-                        .then(() => console.log('✅ Wiadomość usunięta.'))
-                        .catch(err => console.error('❌ Błąd przy usuwaniu wiadomości:', err.message));
-                }, 500); // 0.5 sekundy
+        setTimeout(() => {
+          sentMessage.delete()
+            .then(() => console.log('✅ Wiadomość usunięta.'))
+            .catch(err => console.error('❌ Błąd przy usuwaniu wiadomości:', err.message));
+        }, 500); // 0.5 sekundy
 
-            } catch (error) {
-                console.error(`❌ Błąd przy pingowaniu na kanale ${channelId}:`, error.message);
-            }
-        }
+      } catch (error) {
+        console.error(`❌ Błąd przy pingowaniu na kanale ${channelId}:`, error.message);
+      }
     }
+  }
 });
 
-// 🔼🔼🔼 KONIEC DODATKU 🔼🔼🔼
-
+// 🔷🔷🔷 KONIEC DODATKU 🔷🔷🔷
 keepAlive(); // render.com
 client.login(process.env.DISCORD_TOKEN);
