@@ -79,9 +79,9 @@ client.on('messageCreate', async (message) => {
 
 const roleToWatch = '1382320392143634455';
 const channelsToPing = [
-  '1382320412016513024', // <- i tu
-  '1383157622428925952',
-  '1382320417288618055',
+
+  '1382320418978795603', // <- i tu
+
 ];
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
