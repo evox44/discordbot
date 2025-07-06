@@ -47,15 +47,17 @@ client.once('ready', async () => {
   }, 7000); // co 7 sekund
 });
 
+
+const allowedUserId = '1058743816921825342'; // ID dozwolonego użytkownika
+
 client.on('messageCreate', async (message) => {
-  // 🛑 Ignoruj boty
   if (message.author.bot) return;
 
-  // ✅ Tylko kanał LEGITCHECKI
+  // Tylko kanał LEGITCHECKI
   if (message.channel.id !== legitChannelId) return;
 
-  // ✅ Musi być wzmianka
-  if (!message.mentions.users.size) return;
+  // ✅ Musi być wzmianka i tylko konkretny użytkownik
+  if (!message.mentions.users.has(allowedUserId)) return;
 
   try {
     const channel = await client.channels.fetch(legitChannelId);
@@ -66,16 +68,15 @@ client.on('messageCreate', async (message) => {
 
     messageCount++;
     const newName = `〢✅﹕vouches➔${messageCount}`;
-
     await channel.setName(newName);
     console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
 
-    // ✅ Automatyczny zapis do counter.json
     fs.writeFileSync(COUNTER_FILE, JSON.stringify({ messageCount }, null, 2));
   } catch (error) {
     console.error('❌ Błąd przy aktualizacji kanału:', error.message);
   }
 });
+
 
 const roleToWatch = '1391335956732186777';
 const channelsToPing = [
