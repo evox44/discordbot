@@ -13,10 +13,10 @@ const client = new Client({
 });
 
 const COUNTER_FILE = 'counter.json';
-const legitChannelId = '1382320412016513024'; // ID kanału LEGITCHECKI
+const legitChannelId = '1391340475700744363'; // ID kanału LEGITCHECKI
 
 // Wczytaj messageCount z pliku lub ustaw na 0, jeśli brak pliku
-let messageCount = 10;
+let messageCount = 0;
 if (fs.existsSync(COUNTER_FILE)) {
   try {
     const data = JSON.parse(fs.readFileSync(COUNTER_FILE));
@@ -32,8 +32,8 @@ client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
   const statuses = [
-    { name: '.gg/soulstore', type: ActivityType.Watching },
-    { name: 'SoulStore | N4jtaniej i Najszybciej!', type: ActivityType.Playing },
+    { name: '.gg/7hVSYGBzcD', type: ActivityType.Watching },
+    { name: 'Evox N1tros | Fast and Ch3ap!', type: ActivityType.Playing },
   ];
 
   let index = 0;
@@ -65,7 +65,7 @@ client.on('messageCreate', async (message) => {
     }
 
     messageCount++;
-    const newName = `💚︲ʟᴇɢɪᴛ·ᴄʜᴇᴄᴋɪ➔${messageCount}`;
+    const newName = `〢✅﹕vouches➔${messageCount}`;
 
     await channel.setName(newName);
     console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
@@ -77,10 +77,12 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-const roleToWatch = '1382320392143634455';
+const roleToWatch = '1391335956732186777';
 const channelsToPing = [
 
-  '1382320418978795603', // <- i tu
+  '1391348902057218158',
+  '1391340475700744363',
+  '1391353599065329694', // <- i tu
 
 ];
 
