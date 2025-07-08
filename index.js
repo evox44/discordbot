@@ -14,9 +14,10 @@ const client = new Client({
 
 const COUNTER_FILE = 'counter.json';
 const legitChannelId = '1391340475700744363'; // ID kanału LEGITCHECKI
+const allowedUserId = '1058743816921825342';  // ID dozwolonego użytkownika
 
 // Wczytaj messageCount z pliku lub ustaw na 0, jeśli brak pliku
-let messageCount = 0;
+let messageCount = 3;
 if (fs.existsSync(COUNTER_FILE)) {
   try {
     const data = JSON.parse(fs.readFileSync(COUNTER_FILE));
@@ -28,9 +29,17 @@ if (fs.existsSync(COUNTER_FILE)) {
   }
 }
 
+// Funkcja: inkrementuj licznik i zapisz do pliku
+function incrementMessageCountAndSave() {
+  messageCount++;
+  fs.writeFileSync(COUNTER_FILE, JSON.stringify({ messageCount }, null, 2));
+}
+
+// Bot gotowy
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
+  // Statusy
   const statuses = [
     { name: '.gg/7hVSYGBzcD', type: ActivityType.Watching },
     { name: 'Evox N1tros | Fast and Ch3ap!', type: ActivityType.Playing },
@@ -47,16 +56,14 @@ client.once('ready', async () => {
   }, 7000); // co 7 sekund
 });
 
-
-const allowedUserId = '1058743816921825342'; // ID dozwolonego użytkownika
-
+// Obsługa wiadomości
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
   // Tylko kanał LEGITCHECKI
   if (message.channel.id !== legitChannelId) return;
 
-  // ✅ Musi być wzmianka i tylko konkretny użytkownik
+  // Musi być wzmianka i tylko konkretny użytkownik
   if (!message.mentions.users.has(allowedUserId)) return;
 
   try {
@@ -66,25 +73,22 @@ client.on('messageCreate', async (message) => {
       return;
     }
 
-    messageCount++;
+    incrementMessageCountAndSave();
+
     const newName = `〢✅﹕vouches➔${messageCount}`;
     await channel.setName(newName);
-    console.log(`✅ Zmieniono nazwę kanału na: ${newName}`);
-
-    fs.writeFileSync(COUNTER_FILE, JSON.stringify({ messageCount }, null, 2));
+    console.log(`🟢 Zmieniono nazwę kanału na: ${newName}`);
   } catch (error) {
     console.error('❌ Błąd przy aktualizacji kanału:', error.message);
   }
 });
 
-
+// Powiadomienie o roli
 const roleToWatch = '1391335956732186777';
 const channelsToPing = [
-
-  '1391348902057218158',
-  '1391340475700744363',
-  '1391353599065329694', // <- i tu
-
+  '1391348902057218158', // ToS
+  '1391340691816448000', // Are We Legit
+  '1392059729827860502', // Stock Evox
 ];
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
